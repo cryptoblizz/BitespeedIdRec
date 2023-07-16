@@ -1,4 +1,4 @@
-package com.bitespeed.identityRec.Classes;
+package com.bitespeed.identityRec.Model;
 
 public class LinkPrecedence {
     public static final String SECONDARY = "secondary";

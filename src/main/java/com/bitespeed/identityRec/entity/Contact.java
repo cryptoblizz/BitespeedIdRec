@@ -1,6 +1,7 @@
 package com.bitespeed.identityRec.entity;
 
-import com.bitespeed.identityRec.Classes.LinkPrecedence;
+import com.bitespeed.identityRec.Model.LinkPrecedence;
+import jakarta.annotation.PreDestroy;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
@@ -81,26 +82,29 @@ public class Contact {
         return createdAt;
     }
 
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
     public LocalDateTime getUpdatedAt() {
         return updatedAt;
-    }
-
-    public void setUpdatedAt(LocalDateTime updatedAt) {
-        this.updatedAt = updatedAt;
     }
 
     public LocalDateTime getDeletedAt() {
         return deletedAt;
     }
 
-    public void setDeletedAt(LocalDateTime deletedAt) {
-        this.deletedAt = deletedAt;
+    @PrePersist
+    protected void onCreate() {
+        LocalDateTime now = LocalDateTime.now();
+        this.createdAt = now;
+        this.updatedAt = now;
     }
 
-    // Getters and setters (omitted for brevity)
+    @PreUpdate
+    protected void onUpdate() {
+        this.updatedAt = LocalDateTime.now();
+    }
+
+    @PreDestroy
+    protected void onDelete() {
+        this.deletedAt = LocalDateTime.now();
+    }
 
 }
