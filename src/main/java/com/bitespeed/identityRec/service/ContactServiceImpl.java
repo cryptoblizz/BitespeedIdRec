@@ -28,17 +28,20 @@ public class ContactServiceImpl implements ContactService {
         return foundContacts;
 
     }
-    public ContactResponseObject addContactRestCall(String email, String number) {
-        if (email == null && number == null) {
-            throw new RuntimeException("Invalid Request");
+
+    public void validateRequest(String phoneNumber, String email) {
+        if (phoneNumber == null && email == null) {
+            throw new IllegalArgumentException("Both phoneNumber and email cannot be null.");
         }
+    }
+    public ContactResponseObject addContactRestCall(String email, String number) {
 
         // BOTH CHECKS REQUIRED
         int c_email = contactRepository.findByEmail(email).size();
         int c_number = contactRepository.findByPhoneNumber(number).size();
 
+        // Check if new User based on email and phoneNumber
         if(c_email == 0 && c_number ==0){
-            //first time add contact;
             Contact newContact = new Contact();
             newContact.setEmail(email);
             newContact.setPhoneNumber(number);
@@ -46,34 +49,33 @@ public class ContactServiceImpl implements ContactService {
 
             contactRepository.save(newContact);
             return getContactResponse(newContact);
-
         }
-        Contact c = contactRepository.findByEmailAndPhoneNumber(email, number);
-        if (c != null) {
-            logger.info("Contact was found with the same number and phone. No record inserted");
 
-            return getContactResponse(c);
+        Contact oldContact = contactRepository.findByEmailAndPhoneNumber(email, number);
+        if (oldContact != null) {
+            // Contact was found with the same number and phone. No record inserted
+            return getContactResponse(oldContact);
         }
+
         int numberCount = 0;
         int emailCount = 0;
-        if (email != null) {
+        if (email != null)
             emailCount = contactRepository.findCountByEmail(email);
-        }
-        if (number != null) {
+
+        if (number != null)
             numberCount = contactRepository.findCountByPhoneNumber(number);
-        }
 
         if (emailCount > 0 && numberCount > 0) {
-            logger.info("Both email and contact present in different records need to modify accordingly");
-            // think of it is as two different chain which may or may not have secondary elements;
-            c = addContactTwoPrimary(email, number);
-
-            return getContactResponse(c);
-
+            //Both email and contact present in different records need to modify accordingly
+            // Think of it is as two different chain which may or may not have secondary elements;
+            Contact commonPrimary = addContactTwoPrimary(email, number);
+            return getContactResponse(commonPrimary);
         }
+
         if ((emailCount > 0 && number != null) || (numberCount > 0 && email != null)) {
-            //Query for primary account
             // query the database to get list of all ids where this email is present this will be all secondary account or a primary account if primary account get the
+            // For these types we already have the email/phoneNumber in some account we just need to find the PrimiaryId for new object
+
             Integer primaryId = null;
             if(emailCount >0){
             primaryId = contactRepository.findPrimaryIdfromPrimaryIdsEmail(email);
@@ -89,14 +91,12 @@ public class ContactServiceImpl implements ContactService {
                     primaryId = contactRepository.findPrimaryIdfromSecondaryIdsNumber(number);
                 }
             }
-            if(primaryId == null){
-                logger.warning("Primary ID not found for number please check");
-            }
-            c = addContact(email, number,primaryId);
-            return getContactResponse(c);
+            Contact newContact = addContact(email, number,primaryId);
+            return getContactResponse(newContact);
         }
 
         else{
+            // Last case when a registered email is there with a null phoneNumber in this case we will not register a new row
             Contact contact= contactRepository.findContactbyEmailorNumber(email,number).get(0);
             getContactResponse(contact);
         }
@@ -124,7 +124,7 @@ public class ContactServiceImpl implements ContactService {
 
         Contact topEmail = allEmail.get(0);
         Contact topNumber = allNumbers.get(0);
-        Contact topContact = null;
+        // we make a choice of using the first created contact as the new primary
         if (topEmail.getCreatedAt().compareTo(topNumber.getCreatedAt()) < 0)
             contactRepository.updateRecordsTwoPrimary("secondary",topEmail.getId(),topEmail.getId(),topNumber .getId(),topEmail);
         else

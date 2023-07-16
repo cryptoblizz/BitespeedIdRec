@@ -10,4 +10,6 @@ import java.util.List;
 public interface ContactService {
     ContactResponseObject addContactRestCall(String email, String number);
     Contact getContact(String email, String number);
+
+    void validateRequest(String phoneNumber, String email);
 }
