@@ -22,6 +22,7 @@ Before getting started, make sure you have the following tools installed:
     ```bash
     cd BitespeedIdRec
     docker-compose up
+Exposed endpoint: http://localhost:8080/identity (POST Requestin format http://localhost:8080/identity?email=mailb&phoneNumber=111)
 
 
 To learn more about the problem statement go to : https://bitespeed.notion.site/Bitespeed-Backend-Task-Identity-Reconciliation-53392ab01fe149fab989422300423199
