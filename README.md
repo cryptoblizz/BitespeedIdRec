@@ -19,10 +19,10 @@ Before getting started, make sure you have the following tools installed:
    ```bash
    git clone https://github.com/cryptoblizz/BitespeedIdRec.git
 3. Step into directory and run
-```bash
-cd your-repository
-docker-compose up
-```
+    ```bash
+    cd BitespeedIdRec
+    docker-compose up
+
 
 To learn more about the problem statement go to : https://bitespeed.notion.site/Bitespeed-Backend-Task-Identity-Reconciliation-53392ab01fe149fab989422300423199
 
