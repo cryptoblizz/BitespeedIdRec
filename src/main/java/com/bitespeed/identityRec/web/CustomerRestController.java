@@ -25,4 +25,10 @@ public class CustomerRestController {
         return ResponseEntity.ok(responseDTO);
     }
 
+    @GetMapping
+    public String redirectToPost(){
+        return "This application only takes POST Request";
+    }
+
+
 }
