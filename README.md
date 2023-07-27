@@ -12,7 +12,6 @@ Before getting started, make sure you have the following tools installed:
 
 - Git
 - Docker
-- Docker Compose
 ## Installation and Running 
 1. Clone the repository:
    ```bash
@@ -20,7 +19,7 @@ Before getting started, make sure you have the following tools installed:
 2. Step into directory and run
     ```bash
     cd BitespeedIdRec
-    docker-compose up
+    docker compose up
    
 This will spin up the application and you can test the endpoint provided below
 
