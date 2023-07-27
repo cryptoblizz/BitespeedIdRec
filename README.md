@@ -15,7 +15,6 @@ Before getting started, make sure you have the following tools installed:
 - Docker Compose
 ## Installation and Running 
 1. Clone the repository:
-
    ```bash
    git clone https://github.com/cryptoblizz/BitespeedIdRec.git
 2. Step into directory and run
@@ -24,13 +23,21 @@ Before getting started, make sure you have the following tools installed:
     docker-compose up
    
 This will spin up the application and you can test the endpoint provided below
+
 3. To remove all previous runs data and have a clean start of database use this step before docker compose up
    ```bash
    docker compose down -v
    
-*******
+**********
 
-Exposed endpoint: http://localhost:8080/identity (only POST Request in format http://localhost:8080/identity?email=mailb&phoneNumber=111)
+Exposed endpoint: http://localhost:8080/identity
+Accepts only POST Request Body in format 
+```tsx
+{
+	"email"?: string,
+	"phoneNumber"?: number
+}
+```
 
 ****
 
