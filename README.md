@@ -18,12 +18,21 @@ Before getting started, make sure you have the following tools installed:
 
    ```bash
    git clone https://github.com/cryptoblizz/BitespeedIdRec.git
-3. Step into directory and run
+2. Step into directory and run
     ```bash
     cd BitespeedIdRec
     docker-compose up
-Exposed endpoint: http://localhost:8080/identity (POST Requestin format http://localhost:8080/identity?email=mailb&phoneNumber=111)
+   
+This will spin up the application and you can test the endpoint provided below
+3. To remove all previous runs data and have a clean start of database use this step before docker compose up
+   ```bash
+   docker compose down -v
+   
+*******
 
+Exposed endpoint: http://localhost:8080/identity (only POST Request in format http://localhost:8080/identity?email=mailb&phoneNumber=111)
+
+****
 
 To learn more about the problem statement go to : https://bitespeed.notion.site/Bitespeed-Backend-Task-Identity-Reconciliation-53392ab01fe149fab989422300423199
 

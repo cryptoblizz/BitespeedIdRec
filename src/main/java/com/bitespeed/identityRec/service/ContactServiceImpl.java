@@ -139,7 +139,7 @@ public class ContactServiceImpl implements ContactService {
         if (contact != null) {
             ContactResponseData contactResponseData = new ContactResponseData();
             contactResponseData.setPrimaryContactId((Objects.equals(contact.getLinkPrecedence(), "primary")) ? contact.getId() : contact.getLinkedId() );
-            contactResponseData.setEmails(contactRepository.getEmailsByLinkedId(contact.getId()));
+            contactResponseData.setEmails(contactRepository.getEmailsByLinkedId(contactResponseData.getPrimaryContactId()));
             contactResponseData.setPhoneNumbers(contactRepository.getPhoneNumbersByLinkedId(contactResponseData.getPrimaryContactId()));
             contactResponseData.setSecondaryContactIds(contactRepository.getSecondaryIDs(contact.getLinkedId()));
             ContactResponseObject contactResponseObject = new ContactResponseObject();
