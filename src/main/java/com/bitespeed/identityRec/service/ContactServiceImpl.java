@@ -127,17 +127,9 @@ public class ContactServiceImpl implements ContactService {
         Contact topNumber = allNumbers.get(0);
         // we make a choice of using the first created contact as the new primary
         if  (topEmail.getCreatedAt().compareTo(topNumber.getCreatedAt()) >= 0) {
-            System.out.println("Heere 1");
-            System.out.println(Objects.equals(topNumber.getLinkPrecedence(), "secondary") ? topNumber.getLinkedId() : topNumber.getId());
-            System.out.println(topNumber.getLinkPrecedence());
             contactRepository.updateRecordsTwoPrimary("secondary", topEmail.getId(), Objects.equals(topNumber.getLinkPrecedence(), "secondary") ? topNumber.getLinkedId() : topNumber.getId(), topEmail);
-            System.out.println(topEmail.getId());
         }else {
-            System.out.println("Heere 2");
-            System.out.println(Objects.equals(topEmail.getLinkPrecedence(), "secondary") ? topEmail.getLinkedId() : topEmail.getId());
-            System.out.println(topEmail.getLinkPrecedence());
             contactRepository.updateRecordsTwoPrimary("secondary", topNumber.getId(), Objects.equals(topEmail.getLinkPrecedence(), "secondary") ? topEmail.getLinkedId() : topEmail.getId(), topNumber);
-            System.out.println(topNumber.getId());
         }
         logger.info("Updated Chain records");
 
