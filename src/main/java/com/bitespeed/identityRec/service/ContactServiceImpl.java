@@ -11,6 +11,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 @Service
 public class ContactServiceImpl implements ContactService {
@@ -125,23 +126,32 @@ public class ContactServiceImpl implements ContactService {
         Contact topEmail = allEmail.get(0);
         Contact topNumber = allNumbers.get(0);
         // we make a choice of using the first created contact as the new primary
-        if (topEmail.getCreatedAt().compareTo(topNumber.getCreatedAt()) < 0)
-            contactRepository.updateRecordsTwoPrimary("secondary",topEmail.getId(),topEmail.getId(),topNumber .getId(),topEmail);
-        else
-            contactRepository.updateRecordsTwoPrimary("secondary",topNumber.getId() ,topNumber.getId(),topEmail.getId(),topNumber);
+        if  (topEmail.getCreatedAt().compareTo(topNumber.getCreatedAt()) >= 0) {
+            System.out.println("Heere 1");
+            System.out.println(Objects.equals(topNumber.getLinkPrecedence(), "secondary") ? topNumber.getLinkedId() : topNumber.getId());
+            System.out.println(topNumber.getLinkPrecedence());
+            contactRepository.updateRecordsTwoPrimary("secondary", topEmail.getId(), Objects.equals(topNumber.getLinkPrecedence(), "secondary") ? topNumber.getLinkedId() : topNumber.getId(), topEmail);
+            System.out.println(topEmail.getId());
+        }else {
+            System.out.println("Heere 2");
+            System.out.println(Objects.equals(topEmail.getLinkPrecedence(), "secondary") ? topEmail.getLinkedId() : topEmail.getId());
+            System.out.println(topEmail.getLinkPrecedence());
+            contactRepository.updateRecordsTwoPrimary("secondary", topNumber.getId(), Objects.equals(topEmail.getLinkPrecedence(), "secondary") ? topEmail.getLinkedId() : topEmail.getId(), topNumber);
+            System.out.println(topNumber.getId());
+        }
+        logger.info("Updated Chain records");
 
-        logger.info("Updated two Chain records");
-
-        return (topEmail.getCreatedAt().compareTo(topNumber.getCreatedAt()) < 0)? topEmail:topNumber;
+        return (topEmail.getCreatedAt().compareTo(topNumber.getCreatedAt()) >= 0)? topEmail:topNumber;
     }
 
     public ContactResponseObject getContactResponse(Contact contact){
         if (contact != null) {
             ContactResponseData contactResponseData = new ContactResponseData();
             contactResponseData.setPrimaryContactId((Objects.equals(contact.getLinkPrecedence(), "primary")) ? contact.getId() : contact.getLinkedId() );
-            contactResponseData.setEmails(contactRepository.getEmailsByLinkedId(contactResponseData.getPrimaryContactId()));
-            contactResponseData.setPhoneNumbers(contactRepository.getPhoneNumbersByLinkedId(contactResponseData.getPrimaryContactId()));
-            contactResponseData.setSecondaryContactIds(contactRepository.getSecondaryIDs(contact.getLinkedId()));
+            contactResponseData.setEmails(contactRepository.getEmailsByLinkedId(contactResponseData.getPrimaryContactId()).stream().map(Contact::getEmail).distinct().collect(Collectors.toList()));
+            contactResponseData.setPhoneNumbers(contactRepository.getPhoneNumbersByLinkedId(contactResponseData.getPrimaryContactId()).stream().map(Contact::getPhoneNumber).distinct().collect(Collectors.toList()));
+            contactResponseData.setSecondaryContactIds(contactRepository.getSecondaryIDs(contactResponseData.getPrimaryContactId()).stream().map(Contact::getId).distinct().collect(Collectors.toList()));
+
             ContactResponseObject contactResponseObject = new ContactResponseObject();
             contactResponseObject.setContact(contactResponseData);
             return contactResponseObject;

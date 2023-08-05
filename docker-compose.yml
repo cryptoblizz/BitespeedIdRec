@@ -1,4 +1,5 @@
 version: '3.8'
+name: bitespeedbackendtask
 services:
   postgres:
     image: postgres:14.1-alpine

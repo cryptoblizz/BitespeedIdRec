@@ -20,6 +20,7 @@ public class DatabaseQueryRunner implements CommandLineRunner {
     public void run(String... args) throws Exception {
         String sql = "SELECT NOW()";
         String result = jdbcTemplate.queryForObject(sql, String.class);
+        System.out.println("Application is up and listening for POST request on http://localhost:8080/identity ");
         System.out.println("Current database time: " + result);
     }
 }
