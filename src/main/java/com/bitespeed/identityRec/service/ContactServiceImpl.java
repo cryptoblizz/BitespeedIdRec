@@ -99,10 +99,8 @@ public class ContactServiceImpl implements ContactService {
         else{
             // Last case when a registered email is there with a null phoneNumber in this case we will not register a new row
             Contact contact= contactRepository.findContactbyEmailorNumber(email,number).get(0);
-            getContactResponse(contact);
+            return getContactResponse(contact);
         }
-
-        return new ContactResponseObject();
 
     }
 
